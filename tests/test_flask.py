@@ -1,9 +1,12 @@
+from typing import Any
+
 import pytest
-from app.main.models import Parking, ClientParking
+
+from app.main.models import ClientParking, Parking
 
 
 @pytest.mark.parametrize("route", ["/clients", "/clients/1"])
-def test_route_status(client, route):
+def test_route_status(client: Any, route: Any) -> None:
     """Проверка, что все GET-методы возвращают код 200."""
 
     rv = client.get(route)
@@ -11,7 +14,7 @@ def test_route_status(client, route):
     assert rv.status_code == 200
 
 
-def test_create_client(client):
+def test_create_client(client: Any) -> None:
     """Создание клиента."""
 
     creation_passed = client.post(
@@ -31,7 +34,7 @@ def test_create_client(client):
     assert "id" in data
 
 
-def test_create_parking(client):
+def test_create_parking(client: Any) -> None:
     """Создание парковки."""
 
     creation_passed = client.post(
@@ -51,7 +54,7 @@ def test_create_parking(client):
 
 
 @pytest.mark.parking
-def test_create_client_parking(client):
+def test_create_client_parking(client: Any) -> None:
     """Заезд на парковку."""
 
     working_parking_id = 1
@@ -108,7 +111,7 @@ def test_create_client_parking(client):
 
 
 @pytest.mark.parking
-def test_delete_client_parking(client):
+def test_delete_client_parking(client: Any) -> None:
     """Выезд с парковки."""
 
     working_parking_id = 4
