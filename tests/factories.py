@@ -2,11 +2,10 @@ import factory
 import factory.fuzzy as fuzzy
 import random
 from faker import Faker
+from app.main.app import db
+from app.main.models import Client, Parking
 
 fake = Faker()
-
-from ..main.app import db
-from ..main.models import Client, Parking
 
 
 class ClientFactory(factory.alchemy.SQLAlchemyModelFactory):

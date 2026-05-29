@@ -1,5 +1,5 @@
 import pytest
-from ..main.models import Parking, ClientParking
+from app.main.models import Parking, ClientParking
 
 
 @pytest.mark.parametrize("route", ["/clients", "/clients/1"])
