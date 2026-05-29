@@ -1,7 +1,10 @@
+from datetime import datetime, timedelta, timezone
+
 import pytest
-from app.main.app import create_app, db as _db
-from app.main.models import Client, Parking, ClientParking
-from datetime import datetime, timezone, timedelta
+
+from app.main.app import create_app
+from app.main.app import db as _db
+from app.main.models import Client, ClientParking, Parking
 
 
 def pytest_configure(config):

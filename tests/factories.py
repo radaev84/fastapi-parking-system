@@ -1,7 +1,9 @@
+import random
+
 import factory
 import factory.fuzzy as fuzzy
-import random
 from faker import Faker
+
 from app.main.app import db
 from app.main.models import Client, Parking
 
