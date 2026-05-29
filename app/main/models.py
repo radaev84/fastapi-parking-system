@@ -1,9 +1,9 @@
 from typing import Any, Dict
 
-from .app import db
+from app.main.app import db
 
 
-class Client(db.Model):
+class Client(db.Model):  # type: ignore[name-defined]
     __tablename__ = "client"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -13,14 +13,14 @@ class Client(db.Model):
     car_number = db.Column(db.String(10))
     parking_records = db.relationship("ClientParking", back_populates="client")
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Клиент {self.name} {self.surname}"
 
     def to_json(self) -> Dict[str, Any]:
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
-class Parking(db.Model):
+class Parking(db.Model):  # type: ignore[name-defined]
     __tablename__ = "parking"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -30,14 +30,14 @@ class Parking(db.Model):
     count_available_places = db.Column(db.Integer, nullable=False)
     client_records = db.relationship("ClientParking", back_populates="parking")
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Парковка {self.address}"
 
     def to_json(self) -> Dict[str, Any]:
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
-class ClientParking(db.Model):
+class ClientParking(db.Model):  # type: ignore[name-defined]
     __tablename__ = "client_parking"
 
     id = db.Column(db.Integer, primary_key=True)

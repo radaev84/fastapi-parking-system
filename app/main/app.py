@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from typing import List
+from typing import Any, List, Tuple
 
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
-def create_app():
+def create_app() -> Any:
     app = Flask(__name__)
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///prod.db"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -19,25 +19,25 @@ def create_app():
         db.create_all()
 
     @app.teardown_appcontext
-    def shutdown_session(exception=None):
+    def shutdown_session(exception: Any = None) -> None:
         db.session.remove()
 
     @app.route("/clients", methods=["GET"])
-    def get_clients_handler():
+    def get_clients_handler() -> Tuple:
         """Получение списка всех клиентов."""
         clients: List[Client] = db.session.query(Client).all()
         clients_list = [c.to_json() for c in clients]
         return jsonify(clients_list), 200
 
     @app.route("/clients/<int:client_id>", methods=["GET"])
-    def get_client_handler(client_id):
+    def get_client_handler(client_id: int) -> Tuple:
         """Получение информации о клиенте по ID."""
         client: Client = Client.query.get_or_404(client_id)
 
-        return client.to_json()
+        return client.to_json(), 200
 
     @app.route("/clients", methods=["POST"])
-    def create_client_handler():
+    def create_client_handler() -> Tuple:
         """Создание нового клиента"""
         data = request.get_json()
         name = data.get("name")
@@ -64,7 +64,7 @@ def create_app():
         return result, 201
 
     @app.route("/parkings", methods=["POST"])
-    def create_parking_handler():
+    def create_parking_handler() -> Tuple:
         """Создание новой парковочной зоны."""
         data = request.get_json()
         address = data.get("address")
@@ -94,7 +94,7 @@ def create_app():
         return result, 201
 
     @app.route("/client_parkings", methods=["POST"])
-    def enter_parking_handler():
+    def enter_parking_handler() -> Tuple:
         """
         Обработка заезда на парковку.
         Проверки: открыта ли парковка, количество свободных мест на парковке уменьшается, фиксируется дата заезда.
@@ -143,7 +143,7 @@ def create_app():
         )
 
     @app.route("/client_parkings", methods=["DELETE"])
-    def exit_parking_handler():
+    def exit_parking_handler() -> Tuple:
         """
         Обработка выезда с парковки (количество свободных мест увеличивается, проставляем время выезда).
         В теле запроса передаются client_id, parking_id.
@@ -183,89 +183,5 @@ def create_app():
             jsonify({"message": f"Клиент {client} успешно покинул парковку {parking}"}),
             200,
         )
-
-    # @app.route("/test_route")
-    # def math_route():
-    #     """Тестовый роут для расчета степени"""
-    #     number = int(request.args.get("number", 0))
-    #     result = number ** 2
-    #     return jsonify(result)
-
-    # @app.route("/users", methods=['POST'])
-    # def create_user_handler():
-    #     """Создание нового пользователя"""
-    #     name = request.form.get('name', type=str)
-    #     email = request.form.get('email', type=str)
-    #     surname = request.form.get('surname', type=str)
-
-    #     new_user = User(name=name,
-    #                     surname=surname,
-    #                     email=email)
-
-    #     db.session.add(new_user)
-    #     db.session.commit()
-
-    #     return '', 201
-
-    # @app.route("/users", methods=['GET'])
-    # def get_users_handler():
-    #     """Получение пользователей"""
-    #     users: List[User] = db.session.query(User).all()
-    #     users_list = [u.to_json() for u in users]
-    #     return jsonify(users_list), 200
-
-    # @app.route("/users/<int:user_id>", methods=['GET'])
-    # def get_user_handler(user_id: int):
-    #     """Получение пользователя по ид"""
-    #     user: User = db.session.query(User).get(user_id)
-    #     return jsonify(user.to_json()), 200
-
-    # @app.route("/products", methods=['POST'])
-    # def create_product_handler():
-    #     """Создание нового продукта пользователя"""
-    #     title = request.form.get('title', type=str)
-    #     price = request.form.get('price', type=float)
-    #     user_id = request.form.get('user_id', type=int)
-
-    #     new_product = Product(title=title,
-    #                           price=price,
-    #                           user_id=user_id)
-
-    #     db.session.add(new_product)
-    #     db.session.commit()
-    #     return '', 201
-
-    # @app.route("/products/<int:product_id>", methods=['PATCH'])
-    # def update_product_handler(product_id: int):
-    #     """
-    #     Изменение продукта
-    #     """
-    #     title = request.form.get('title', type=str)
-    #     price = request.form.get('price', type=float)
-    #     user_id = request.form.get('user_id', type=int)
-
-    #     product = db.session.query(Product).get(product_id)
-    #     if title:
-    #         product.title = title
-    #     if price:
-    #         product.price = price
-    #     if user_id:
-    #         product.user_id = user_id
-
-    #     db.session.commit()
-    #     return '', 201
-
-    # @app.route("/", methods=['GET'])
-    # def get_template_handler() -> str:
-    #     """Получение UI-интерфейса с продуктами от пользователей"""
-
-    #     products = db.session.query(Product).all()
-    #     products_by_users = []
-    #     for p in products:
-    #         product_obj = dict(**p.to_json(),
-    #                            user=p.user.to_json())
-    #         products_by_users.append(product_obj)
-    #     return render_template("user_products.html",
-    #                            products=products_by_users)
 
     return app

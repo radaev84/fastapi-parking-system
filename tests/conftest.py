@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+from typing import Any
 
 import pytest
 
@@ -7,12 +8,12 @@ from app.main.app import db as _db
 from app.main.models import Client, ClientParking, Parking
 
 
-def pytest_configure(config):
+def pytest_configure(config: Any) -> None:
     config.addinivalue_line("markers", "parking: mark test to run only parking tests")
 
 
 @pytest.fixture
-def app():
+def app() -> Any:
     _app = create_app()
     _app.config["TESTING"] = True
     _app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://:memory:"
@@ -118,7 +119,7 @@ def app():
 
 
 @pytest.fixture
-def factory_app():
+def factory_app() -> Any:
     _app = create_app()
     _app.config["TESTING"] = True
     _app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://:memory:"
@@ -131,12 +132,12 @@ def factory_app():
 
 
 @pytest.fixture
-def client(app):
+def client(app: Any) -> Any:
     client = app.test_client()
     yield client
 
 
 @pytest.fixture
-def db(factory_app):
+def db(factory_app: Any) -> Any:
     with factory_app.app_context():
         yield _db
